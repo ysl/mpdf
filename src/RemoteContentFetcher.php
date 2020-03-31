@@ -59,6 +59,12 @@ class RemoteContentFetcher implements \Psr\Log\LoggerAwareInterface
 
 		$data = curl_exec($ch);
 
+		// Check http status code.
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if ($http_code == 404) {
+			$data = '';
+		}		
+
 		if (curl_error($ch)) {
 			$message = sprintf('cURL error: "%s"', curl_error($ch));
 			$this->logger->error($message, ['context' => LogContext::REMOTE_CONTENT]);
